@@ -35,64 +35,98 @@ namespace Lab0
         // TODO
         public double MedianKey => throw new NotImplementedException();
 
-
-        public BinarySearchTreeNode<T> GetNode(int key)
+        // Done
+        public BinarySearchTreeNode<T>? GetNode(int key)
         {
             return GetNodeRecursive(Root, key);
         }
 
-        private BinarySearchTreeNode<T> GetNodeRecursive(BinarySearchTreeNode<T> node, int key)
+        // Done
+        private BinarySearchTreeNode<T>? GetNodeRecursive(BinarySearchTreeNode<T> node, int key)
         {
-            return null;
+            if(node == null)
+            {
+                return null;
+            }
+
+            if(node.Key == key)
+            {
+                return node;
+            }
+
+            else if (key < node.Key)
+            {
+                return GetNodeRecursive(node.Left, key);
+            }
+
+            else
+            {
+                return GetNodeRecursive(node.Right, key);
+            }
         }
 
 
-        // TODO
+        // Done
         public void Add(int key, T value)
         {
+            
             // if root is equal to null set the root as the new node
             if (Root == null)
             {
                 Root = new BinarySearchTreeNode<T>(key, value);
+                Count++;
             }
             //else insert the recursive method using the root and the node
             else
-            
             {
-                Add(key, value);
+                AddRecursive(key, value, Root);
             }
 
         }
-        // TODO
-        private void AddRecursive(int key, T value, BinarySearchTreeNode<T> node)
+        // Done
+        private void AddRecursive(int key, T value, BinarySearchTreeNode<T> parent)
         {
+            // duplicate found
+            // do not add to BST
+            if (key == parent.Key)
+            {
+                return;
+            }
+
             // check if the new node is less than the parent node
-            if(node.Key <= Root.Key)
+            if(key < parent.Key)
             {
                 // if it is then check if the left node is null
-                if(Root.Left == null)
+                if(parent.Left == null)
                 {
                     // if null then set that to the new node
-                    Root.Left = node;
+                    var newNode = new BinarySearchTreeNode<T>(key, value);
+                    parent.Left = newNode;
+                    newNode.Parent = parent;
+                    Count++;
+
                 }
                 else
                 {
                     // else add the new node to the left
-                    AddRecursive(key, value, Root.Left);
+                    AddRecursive(key, value, parent.Left);
                 }
             }
             else
             {
                 // if it is then check if the right node is null
-                if (Root.Right == null)
+                if (parent.Right == null)
                 {
                     // if null then set that to the new node
-                    Root.Right = node;
+                    var newNode = new BinarySearchTreeNode<T>(key, value);
+                    parent.Right = newNode;
+                    newNode.Parent = parent;
+                    Count++;
                 }
                 else
                 {
                     // else add the new node to the right
-                    AddRecursive(key, value, Root.Right);
+                    AddRecursive(key, value, parent.Right);
                 }
             }
         }
@@ -103,10 +137,19 @@ namespace Lab0
             Root = null;
         }
 
-        // TODO
+        // Done
         public bool Contains(int key)
         {
-            throw new NotImplementedException();
+            var node = GetNode(key);
+
+            if (node == null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
 
         // TODO
@@ -132,10 +175,18 @@ namespace Lab0
             throw new NotImplementedException();
         }
 
-        // TODO
+        // Done
         public T Search(int key)
         {
-            throw new NotImplementedException();
+            if (Contains(key))
+            {
+                var node = GetNode(key);
+                return node.Value;
+            }
+            else
+            {
+                return default(T);
+            }
         }
 
         // TODO
@@ -145,7 +196,7 @@ namespace Lab0
         }
 
 
-        // TODO
+        // Done
         public List<int> InOrderKeys
         {
             get
@@ -160,10 +211,22 @@ namespace Lab0
 
         private void InOrderKeysRecursive(BinarySearchTreeNode<T> node, List<int> keys)
         {
-            
+            // left
+            // root
+            // right
+
+            if(node == null)
+            {
+                return;
+            }
+
+            InOrderKeysRecursive(node.Left, keys);
+            keys.Add(node.Key);
+            InOrderKeysRecursive(node.Right, keys);
+
         }
 
-        // TODO
+        // Done
         public List<int> PreOrderKeys
         {
             get
@@ -177,10 +240,22 @@ namespace Lab0
 
         private void PreOrderKeysRecursive(BinarySearchTreeNode<T> node, List<int> keys)
         {
-            
+            // root
+            // left
+            // right
+
+            if(node == null)
+            {
+                return;
+            }
+
+            keys.Add(node.Key);
+            InOrderKeysRecursive(node.Left, keys);
+            InOrderKeysRecursive(node.Right, keys);
+
         }
 
-        // TODO
+        // Done
         public List<int> PostOrderKeys
         {
             get
@@ -193,7 +268,18 @@ namespace Lab0
 
         private void PostOrderKeysRecursive(BinarySearchTreeNode<T> node, List<int> keys)
         {
-            
+            // left
+            // right
+            // root
+
+            if(node == null)
+            {
+                return;
+            }
+
+            InOrderKeysRecursive(node.Left, keys);
+            InOrderKeysRecursive(node.Right, keys);
+            keys.Add(node.Key);
         }
     }
 }
