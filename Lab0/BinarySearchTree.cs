@@ -50,12 +50,51 @@ namespace Lab0
         // TODO
         public void Add(int key, T value)
         {
-            throw new NotImplementedException();
+            // if root is equal to null set the root as the new node
+            if (Root == null)
+            {
+                Root = new BinarySearchTreeNode<T>(key, value);
+            }
+            //else insert the recursive method using the root and the node
+            else
+            
+            {
+                Add(key, value);
+            }
+
         }
         // TODO
-        private void AddRecursive(int key, T value, BinarySearchTree<T> node)
+        private void AddRecursive(int key, T value, BinarySearchTreeNode<T> node)
         {
-
+            // check if the new node is less than the parent node
+            if(node.Key <= Root.Key)
+            {
+                // if it is then check if the left node is null
+                if(Root.Left == null)
+                {
+                    // if null then set that to the new node
+                    Root.Left = node;
+                }
+                else
+                {
+                    // else add the new node to the left
+                    AddRecursive(key, value, Root.Left);
+                }
+            }
+            else
+            {
+                // if it is then check if the right node is null
+                if (Root.Right == null)
+                {
+                    // if null then set that to the new node
+                    Root.Right = node;
+                }
+                else
+                {
+                    // else add the new node to the right
+                    AddRecursive(key, value, Root.Right);
+                }
+            }
         }
 
         // TODO
