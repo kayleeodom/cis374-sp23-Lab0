@@ -2,30 +2,47 @@
 
 namespace Lab0
 {
-	public class BinarySearchTree<T> : IBinarySearchTree<T>
-	{
+    public class BinarySearchTree<T> : IBinarySearchTree<T>
+    {
 
-        private BinarySearchTreeNode<T> Root { get; set; }
+    private BinarySearchTreeNode<T> Root { get; set; }
 
         public BinarySearchTree()
-		{
+        {
             Root = null;
             Count = 0;
-		}
 
+        }
         public bool IsEmpty => Root == null;
 
         public int Count { get; private set; }
 
-        // TODO
-        public int Height => throw new NotImplementedException();
+        // Done
+        public int Height => HeightRecursive(Root);
+
+        private int HeightRecursive(BinarySearchTreeNode<T> node)
+        {
+            if (node == null)
+            {
+                return -1;
+            }
+
+            if (node.Left == null && node.Right == null)
+            {
+                return 0;
+            }
+
+            int leftHeight = HeightRecursive(node.Left);
+            int rightHeight = HeightRecursive(node.Right);
+
+            return 1 + Math.Max(leftHeight, rightHeight);
+        }
 
         // Done
         public int? MinKey => MinKeyRecursive(Root);
 
         private int? MinKeyRecursive(BinarySearchTreeNode<T> node)
         {
-            // keep going to the left until you reach a null
             if (node == null)
             {
                 return null;
@@ -46,17 +63,17 @@ namespace Lab0
         private int? MaxKeyRecursive(BinarySearchTreeNode<T> node)
         {
             // keep going to the right until you reach a null
-            if (node == null)
+            if(node == null)
             {
                 return null;
             }
-            else if (node.Right == null)
+            else if(node.Right == null)
             {
                 return node.Key;
             }
             else
             {
-                return MinKeyRecursive(node.Right);
+                return MaxKeyRecursive(node.Right);
             }
         }
 
@@ -69,21 +86,20 @@ namespace Lab0
         // TODO
         public double MedianKey => throw new NotImplementedException();
 
-        // Done
+        // TODO
         public BinarySearchTreeNode<T>? GetNode(int key)
         {
             return GetNodeRecursive(Root, key);
         }
 
-        // Done
         private BinarySearchTreeNode<T>? GetNodeRecursive(BinarySearchTreeNode<T> node, int key)
         {
-            if(node == null)
+            if (node == null)
             {
                 return null;
             }
 
-            if(node.Key == key)
+            if (node.Key == key)
             {
                 return node;
             }
@@ -99,26 +115,24 @@ namespace Lab0
             }
         }
 
-
         // Done
         public void Add(int key, T value)
         {
-            
             // if root is equal to null set the root as the new node
             if (Root == null)
             {
                 Root = new BinarySearchTreeNode<T>(key, value);
                 Count++;
             }
-            //else insert the recursive method using the root and the node
+            // else insert the recursive method using the root and the node
             else
             {
                 AddRecursive(key, value, Root);
             }
-
         }
+
         // Done
-        private void AddRecursive(int key, T value, BinarySearchTreeNode<T> parent)
+        private void AddRecursive(int key, T? value, BinarySearchTreeNode<T> parent)
         {
             // duplicate found
             // do not add to BST
@@ -128,10 +142,10 @@ namespace Lab0
             }
 
             // check if the new node is less than the parent node
-            if(key < parent.Key)
+            if (key < parent.Key)
             {
                 // if it is then check if the left node is null
-                if(parent.Left == null)
+                if (parent.Left == null)
                 {
                     // if null then set that to the new node
                     var newNode = new BinarySearchTreeNode<T>(key, value);
@@ -146,6 +160,7 @@ namespace Lab0
                     AddRecursive(key, value, parent.Left);
                 }
             }
+
             else
             {
                 // if it is then check if the right node is null
@@ -165,7 +180,7 @@ namespace Lab0
             }
         }
 
-        // TODO
+        // Done
         public void Clear()
         {
             Root = null;
@@ -189,16 +204,26 @@ namespace Lab0
         // TODO
         public BinarySearchTreeNode<T> Next(BinarySearchTreeNode<T> node)
         {
-            throw new NotImplementedException();
+            // 1 right and then the farthest to the left; until you hit a null
+            // Find the min node in the right child's sub tree
+            while(node.Left != null)
+            {
+                node = node.Left;
+            }
+            return node;
         }
 
-        // TODO
         public BinarySearchTreeNode<T> Prev(BinarySearchTreeNode<T> node)
         {
-            throw new NotImplementedException();
+            // 1 left and then the farthest to the right; until you hit a null
+            // Find the min node in the left child's sub tree
+            while(node.Right != null)
+            {
+                node = node.Right;
+            }
+            return node;
         }
 
-        // TODO
         public List<BinarySearchTreeNode<T>> RangeSearch(int min, int max)
         {
             throw new NotImplementedException();
@@ -206,13 +231,101 @@ namespace Lab0
 
         public void Remove(int key)
         {
-            throw new NotImplementedException();
+            var node = GetNode(key);
+            var parent = node.Parent;
+
+            if (node == null)
+            {
+                return;
+            }
+
+            Count--;
+
+            // 1) leaf node
+            if (node.Left == null && node.Right == null)
+            {
+                if (parent.Left == node)
+                {
+                    parent.Left = null;
+                    node.Parent = null;
+                }
+                else if (parent.Right == node)
+                {
+                    parent.Right = null;
+                    node.Parent = null;
+                }
+
+                return;
+            }
+
+            // 2) parent with 1 child
+            if (node.Left == null && node.Right != null)
+            {
+                // only has a right child
+                var child = node.Right;
+                if (parent.Left == node)
+                {
+                    parent.Left = child;
+                    child.Parent = parent;
+
+                    node.Parent = null;
+                    node.Left = null;
+                }
+                else if (parent.Right == node)
+                {
+                    parent.Right = child;
+                    child.Parent = parent;
+
+                    node.Parent = null;
+                    node.Right = null;
+                }
+
+                return;
+            }
+
+            if (node.Left != null && node.Right == null)
+            {
+                // only has a left child
+                var child = node.Left;
+                if (parent.Left == node)
+                {
+                    parent.Left = child;
+                    child.Parent = parent;
+
+                    node.Parent = null;
+                    node.Left = null;
+                }
+                else if (parent.Right == node)
+                {
+                    parent.Right = child;
+                    child.Parent = parent;
+
+                    node.Parent = null;
+                    node.Right = null;
+                }
+
+                return;
+            }
+
+            // 3) parent with 2 children
+
+            // Find the node to remove
+            // Find the next node (successor)
+            //if(node.Left != null && node.Right != null)
+            //{
+                
+            //}
+            // Swap Key and Data from successor to node
+            // Remove the successor (a leaf node) (like case 1)
+
+            //implement the next method
+
         }
 
         // Done
         public T Search(int key)
         {
-            if (Contains(key))
+            if(Contains(key))
             {
                 var node = GetNode(key);
                 return node.Value;
@@ -223,12 +336,11 @@ namespace Lab0
             }
         }
 
-        // TODO
+        // TOOO
         public void Update(int key, T value)
         {
             throw new NotImplementedException();
         }
-
 
         // Done
         public List<int> InOrderKeys
@@ -239,7 +351,6 @@ namespace Lab0
                 InOrderKeysRecursive(Root, keys);
 
                 return keys;
-
             }
         }
 
@@ -257,7 +368,6 @@ namespace Lab0
             InOrderKeysRecursive(node.Left, keys);
             keys.Add(node.Key);
             InOrderKeysRecursive(node.Right, keys);
-
         }
 
         // Done
@@ -278,14 +388,14 @@ namespace Lab0
             // left
             // right
 
-            if(node == null)
+            if (node == null)
             {
                 return;
             }
 
             keys.Add(node.Key);
-            InOrderKeysRecursive(node.Left, keys);
-            InOrderKeysRecursive(node.Right, keys);
+            PreOrderKeysRecursive(node.Left, keys);
+            PreOrderKeysRecursive(node.Right, keys);
 
         }
 
@@ -306,15 +416,49 @@ namespace Lab0
             // right
             // root
 
-            if(node == null)
+            if (node == null)
             {
                 return;
             }
 
-            InOrderKeysRecursive(node.Left, keys);
-            InOrderKeysRecursive(node.Right, keys);
+            PostOrderKeysRecursive(node.Left, keys);
+            PostOrderKeysRecursive(node.Right, keys);
             keys.Add(node.Key);
         }
+
+        // TODO
+        public BinarySearchTreeNode<T> MinNode(BinarySearchTreeNode<T> node)
+        {
+            MinNodeRecursive(node.Left);
+            return node;
+        }
+
+        private BinarySearchTreeNode<T> MinNodeRecursive(BinarySearchTreeNode<T> node)
+        {
+            if (node.Left == null)
+            {
+                return node;
+            }
+
+            return MinNodeRecursive(node.Left);
+        }
+
+        // TODO
+        public BinarySearchTreeNode<T> MaxNode(BinarySearchTreeNode<T> node)
+        {
+            MaxNodeRecursive(node.Right);
+            return node;
+        }
+
+        private BinarySearchTreeNode<T> MaxNodeRecursive(BinarySearchTreeNode<T> node)
+        {
+            if (node.Right == null)
+            {
+                return node;
+            }
+
+            return MaxNodeRecursive(node.Right);
+        }
+
     }
 }
-
