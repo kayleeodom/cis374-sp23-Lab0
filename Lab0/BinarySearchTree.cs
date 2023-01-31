@@ -20,11 +20,45 @@ namespace Lab0
         // TODO
         public int Height => throw new NotImplementedException();
 
-        // TODO
-        public int MinKey => throw new NotImplementedException();
+        // Done
+        public int? MinKey => MinKeyRecursive(Root);
 
-        // TODO
-        public int MaxKey => throw new NotImplementedException();
+        private int? MinKeyRecursive(BinarySearchTreeNode<T> node)
+        {
+            // keep going to the left until you reach a null
+            if (node == null)
+            {
+                return null;
+            }
+            else if (node.Left == null)
+            {
+                return node.Key;
+            }
+            else
+            {
+                return MinKeyRecursive(node.Left);
+            }
+        }
+
+        // Done
+        public int? MaxKey => MaxKeyRecursive(Root);
+
+        private int? MaxKeyRecursive(BinarySearchTreeNode<T> node)
+        {
+            // keep going to the right until you reach a null
+            if (node == null)
+            {
+                return null;
+            }
+            else if (node.Right == null)
+            {
+                return node.Key;
+            }
+            else
+            {
+                return MinKeyRecursive(node.Right);
+            }
+        }
 
         // TODO
         public Tuple<int, T> Min => throw new NotImplementedException();
