@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Lab0
 {
@@ -81,12 +82,31 @@ namespace Lab0
         public Tuple<int, T> Min => throw new NotImplementedException();
 
         // TODO
-        public BinarySearchTreeNode<T> Max => throw new NotImplementedException();
+        public Tuple<int, T> Max => throw new NotImplementedException();
 
         // TODO
-        public double MedianKey => throw new NotImplementedException();
+        public double MedianKey => MedianKeyRecursive(Root);
 
-        // TODO
+        private double MedianKeyRecursive(BinarySearchTreeNode<T> node)
+        {
+            // if its eempty then it returns nothing
+            if (node == null)
+            {
+                return 0;
+            }
+            return 1;
+
+            // Odd case
+            // if the nodes can be divided by 2 and not equal 0 and 
+            //if (InOrderKeys % 2 != 0 && currCount == (Count + 1) / 2)
+            //    return Prev.key;
+
+            // Even case
+            //else if (InOrderKeys % 2 == 0 && currcount == (Count / 2) + 1)
+            //    return (Prev(key) + current.data) / 2;
+        }
+
+        // Done
         public BinarySearchTreeNode<T>? GetNode(int key)
         {
             return GetNodeRecursive(Root, key);
@@ -206,22 +226,34 @@ namespace Lab0
         {
             // 1 right and then the farthest to the left; until you hit a null
             // Find the min node in the right child's sub tree
-            while(node.Left != null)
+            if (node.Right != null)
             {
-                node = node.Left;
+                return MinNode(node.Right);
             }
-            return node;
+            var p = node.Parent;
+            while (p != null && node == p.Right)
+            {
+                node = p;
+                p = p.Right;
+            }
+            return p;
         }
 
         public BinarySearchTreeNode<T> Prev(BinarySearchTreeNode<T> node)
         {
             // 1 left and then the farthest to the right; until you hit a null
             // Find the min node in the left child's sub tree
-            while(node.Right != null)
+            if (node.Left != null)
             {
-                node = node.Right;
+                return MaxNode(node.Left);
             }
-            return node;
+            var p = node.Parent;
+            while (p != null && node == p.Left)
+            {
+                node = p;
+                p = p.Left;
+            }
+            return p;
         }
 
         public List<BinarySearchTreeNode<T>> RangeSearch(int min, int max)
@@ -410,10 +442,6 @@ namespace Lab0
             }
         }
 
-        Tuple<int, T> IBinarySearchTree<T>.Min => throw new NotImplementedException();
-
-        Tuple<int, T> IBinarySearchTree<T>.Max => throw new NotImplementedException();
-
         private void PostOrderKeysRecursive(BinarySearchTreeNode<T> node, List<int> keys)
         {
             // left
@@ -433,8 +461,7 @@ namespace Lab0
         // TODO
         public BinarySearchTreeNode<T> MinNode(BinarySearchTreeNode<T> node)
         {
-            MinNodeRecursive(node.Left);
-            return node;
+            return MinNodeRecursive(node);
         }
 
         private BinarySearchTreeNode<T> MinNodeRecursive(BinarySearchTreeNode<T> node)
@@ -450,8 +477,7 @@ namespace Lab0
         // TODO
         public BinarySearchTreeNode<T> MaxNode(BinarySearchTreeNode<T> node)
         {
-            MaxNodeRecursive(node.Right);
-            return node;
+            return MaxNodeRecursive(node);
         }
 
         private BinarySearchTreeNode<T> MaxNodeRecursive(BinarySearchTreeNode<T> node)
