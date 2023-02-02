@@ -226,26 +226,9 @@ namespace Lab0
         {
             // 1 right and then the farthest to the left; until you hit a null
             // Find the min node in the right child's sub tree
-            if (node.Right != null)
-            {
-                return MinNode(node.Right);
-            }
-            var p = node.Parent;
-            while (p != null && node == p.Right)
-            {
-                node = p;
-                p = p.Right;
-            }
-            return p;
-        }
-
-        public BinarySearchTreeNode<T> Prev(BinarySearchTreeNode<T> node)
-        {
-            // 1 left and then the farthest to the right; until you hit a null
-            // Find the min node in the left child's sub tree
             if (node.Left != null)
             {
-                return MaxNode(node.Left);
+                return MinNode(node.Left);
             }
             var p = node.Parent;
             while (p != null && node == p.Left)
@@ -256,9 +239,41 @@ namespace Lab0
             return p;
         }
 
+        public BinarySearchTreeNode<T> Prev(BinarySearchTreeNode<T> node)
+        {
+            // 1 left and then the farthest to the right; until you hit a null
+            // Find the min node in the left child's sub tree
+            if (node.Right != null)
+            {
+                return MaxNode(node.Right);
+            }
+            var p = node.Parent;
+            while (p != null && node == p.Right)
+            {
+                node = p;
+                p = p.Right;
+            }
+            return p;
+        }
+
         public List<BinarySearchTreeNode<T>> RangeSearch(int min, int max)
         {
-            throw new NotImplementedException();
+            List<BinarySearchTreeNode<T>> result = new List<BinarySearchTreeNode<T>>();
+
+            for(int i = min; i <= max; i++)
+            {
+                if(Contains(i) == true)
+                {
+                    result.Add(GetNode(i));
+                }
+
+                else
+                {
+                    continue;
+                }
+            }
+
+            return result;
         }
 
         public void Remove(int key)
@@ -339,14 +354,17 @@ namespace Lab0
                 return;
             }
 
+            //var node = GetNode(key);
+            //var parent = node.Parent;
+
             // 3) parent with 2 children
 
             // Find the node to remove
-            // Find the next node (successor)
-            //if(node.Left != null && node.Right != null)
-            //{
-                
-            //}
+            if(node.Left != null && node.Right != null)
+            {
+                // Find the next node (successor)
+
+            }
             // Swap Key and Data from successor to node
             // Remove the successor (a leaf node) (like case 1)
 
