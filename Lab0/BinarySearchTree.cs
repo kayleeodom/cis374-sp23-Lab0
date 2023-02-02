@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Xml;
 
 namespace Lab0
 {
     public class BinarySearchTree<T> : IBinarySearchTree<T>
     {
 
-    private BinarySearchTreeNode<T> Root { get; set; }
+        private BinarySearchTreeNode<T> Root { get; set; }
 
         public BinarySearchTree()
         {
@@ -64,11 +65,11 @@ namespace Lab0
         private int? MaxKeyRecursive(BinarySearchTreeNode<T> node)
         {
             // keep going to the right until you reach a null
-            if(node == null)
+            if (node == null)
             {
                 return null;
             }
-            else if(node.Right == null)
+            else if (node.Right == null)
             {
                 return node.Key;
             }
@@ -78,32 +79,63 @@ namespace Lab0
             }
         }
 
-        // TODO
-        public Tuple<int, T> Min => throw new NotImplementedException();
-
-        // TODO
-        public Tuple<int, T> Max => throw new NotImplementedException();
-
-        // TODO
-        public double MedianKey => MedianKeyRecursive(Root);
-
-        private double MedianKeyRecursive(BinarySearchTreeNode<T> node)
+        // Done
+        Tuple<int, T> IBinarySearchTree<T>.Min
         {
-            // if its eempty then it returns nothing
-            if (node == null)
+            get
             {
-                return 0;
+                if (IsEmpty)
+                {
+                    return null;
+                }
+
+                var minNode = MinNode(Root);
+                return Tuple.Create(minNode.Key, minNode.Value);
             }
-            return 1;
+        }
 
-            // Odd case
-            // if the nodes can be divided by 2 and not equal 0 and 
-            //if (InOrderKeys % 2 != 0 && currCount == (Count + 1) / 2)
-            //    return Prev.key;
+        // Done
+        Tuple<int, T> IBinarySearchTree<T>.Max
+        {
+            get
+            {
+                if (IsEmpty)
+                {
+                    return null;
+                }
 
-            // Even case
-            //else if (InOrderKeys % 2 == 0 && currcount == (Count / 2) + 1)
-            //    return (Prev(key) + current.data) / 2;
+                var maxNode = MaxNode(Root);
+                return Tuple.Create(maxNode.Key, maxNode.Value);
+            }
+        }
+
+        // TODO
+        public double MedianKey
+        {
+            get
+            {
+                // get inorder keys
+                var keys = InOrderKeys;
+
+
+                // Odd case
+                // if the nodes can be divided by 2 and not equal 0 and 
+                if (keys.Count % 2 == 1)
+                {
+                    int middleIndex = keys.Count / 2;
+                    return keys[middleIndex];
+                }
+                // Even case
+                else
+                {
+                    int middleIndex1 = keys.Count / 2 - 1;
+                    int middleIndex2 = keys.Count / 2;
+
+                    int sum = keys[middleIndex1] + keys[middleIndex2];
+
+                    return sum / 2.0;
+                }
+            }
         }
 
         // Done
@@ -224,28 +256,10 @@ namespace Lab0
         // TODO
         public BinarySearchTreeNode<T> Next(BinarySearchTreeNode<T> node)
         {
-            // 1 right and then the farthest to the left; until you hit a null
-            // Find the min node in the right child's sub tree
-            if (node.Left != null)
-            {
-                return MinNode(node.Left);
-            }
-            var p = node.Parent;
-            while (p != null && node == p.Left)
-            {
-                node = p;
-                p = p.Left;
-            }
-            return p;
-        }
-
-        public BinarySearchTreeNode<T> Prev(BinarySearchTreeNode<T> node)
-        {
-            // 1 left and then the farthest to the right; until you hit a null
-            // Find the min node in the left child's sub tree
+            // Successor
             if (node.Right != null)
             {
-                return MaxNode(node.Right);
+                return MinNode(node.Right);
             }
             var p = node.Parent;
             while (p != null && node == p.Right)
@@ -256,24 +270,75 @@ namespace Lab0
             return p;
         }
 
+        public BinarySearchTreeNode<T> Prev(BinarySearchTreeNode<T> node)
+        {
+            // Predessor
+            // 1 left and then the farthest to the right; until you hit a null
+            // Find the min node in the left child's sub tree
+            if (node.Left != null)
+            {
+                return MaxNode(node.Left);
+            }
+            var p = node.Parent;
+            while (p != null && node == p.Left)
+            {
+                node = p;
+                p = p.Left;
+            }
+            return p;
+        }
+
+
         public List<BinarySearchTreeNode<T>> RangeSearch(int min, int max)
         {
-            List<BinarySearchTreeNode<T>> result = new List<BinarySearchTreeNode<T>>();
+            // other
+            // make a list
+            // List<BinarySearchTreeNode<T>> result = new List<BinarySearchTreeNode<T>>();
 
-            for(int i = min; i <= max; i++)
+            // for loop from min to max
+            //for (int i = min; i <= max; i++)
+            //{
+            //    if (Contains(i) == true)
+            //    {
+            //        result.Add(GetNode(i));
+            //    }
+
+            //    else
+            //    {
+            //        continue;
+            //    }
+            //}
+
+            //return result;
+
+            // Method 1 => Use Next()
+
+            // Method 2 => Use InOrderKey
+            List<BinarySearchTreeNode<T>> nodeList = new List<BinarySearchTreeNode<T>>();
+
+            if(min > max)
             {
-                if(Contains(i) == true)
+                return nodeList;
+            }
+
+
+            // will return a list of the keys in ordered
+            var orderedKeys = this.InOrderKeys;
+
+            foreach(int key in orderedKeys)
+            {
+                if(key >= min && key <= max)
                 {
-                    result.Add(GetNode(i));
+                    nodeList.Add(GetNode(key));
                 }
 
-                else
+                if(key > max)
                 {
-                    continue;
+                    break;
                 }
             }
 
-            return result;
+            return nodeList;
         }
 
         public void Remove(int key)
