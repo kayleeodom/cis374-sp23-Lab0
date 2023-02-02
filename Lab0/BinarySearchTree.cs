@@ -81,7 +81,7 @@ namespace Lab0
         public Tuple<int, T> Min => throw new NotImplementedException();
 
         // TODO
-        public Tuple<int, T> Max => throw new NotImplementedException();
+        public BinarySearchTreeNode<T> Max => throw new NotImplementedException();
 
         // TODO
         public double MedianKey => throw new NotImplementedException();
@@ -409,6 +409,10 @@ namespace Lab0
                 return keys;
             }
         }
+
+        Tuple<int, T> IBinarySearchTree<T>.Min => throw new NotImplementedException();
+
+        Tuple<int, T> IBinarySearchTree<T>.Max => throw new NotImplementedException();
 
         private void PostOrderKeysRecursive(BinarySearchTreeNode<T> node, List<int> keys)
         {
