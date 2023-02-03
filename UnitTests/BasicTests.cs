@@ -34,6 +34,17 @@ namespace UnitTestProject1
         }
 
         [TestMethod]
+        public void HeightZero()
+        {
+            BinarySearchTree<int> tree = new BinarySearchTree<int>();
+            tree.Add(0,0);
+            Assert.AreEqual(0, tree.Height);
+
+            tree = new BinarySearchTree<int>();
+            Assert.AreEqual(0, tree.Height);
+        }
+
+        [TestMethod]
         public void HeightInt()
         {
             BinarySearchTree<int> tree = new BinarySearchTree<int>();
@@ -231,7 +242,7 @@ namespace UnitTestProject1
             tree.Add(23, 24);
             tree.Remove(8);
             Assert.AreEqual(3, tree.Height);
-            Assert.IsNull(tree.GetNode(8));
+            Assert.IsNull( tree.GetNode(8) );
         }
 
         [TestMethod]
@@ -250,6 +261,58 @@ namespace UnitTestProject1
             tree.Remove(10);
             Assert.AreEqual(2, tree.Height);
             Assert.IsNull(tree.GetNode(10));
+        }
+
+        [TestMethod]
+        public void RemoveRoot3()
+        {
+            BinarySearchTree<int> tree = new BinarySearchTree<int>();
+            tree.Add(8, 9);
+            tree.Add(10, 11);
+            tree.Add(6, 7);
+            tree.Add(5, 6);
+            tree.Add(22, 23);
+            tree.Add(26, 27);
+            tree.Add(7, 8);
+            tree.Add(23, 24);
+
+            tree.Remove(8);
+            tree.Remove(10);
+            tree.Remove(6);
+            tree.Remove(5);
+            tree.Remove(23);
+            tree.Remove(7);
+            tree.Remove(22);
+            Assert.AreEqual(0, tree.Height);
+            Assert.IsNull(tree.GetNode(8));
+            Assert.IsNotNull(tree.GetNode(26));
+            tree.Remove(26);
+        }
+
+        [TestMethod]
+        public void RemoveRoot4()
+        {
+            BinarySearchTree<int> tree = new BinarySearchTree<int>();
+            tree.Add(8, 9);
+            tree.Add(10, 11);
+            tree.Add(6, 7);
+            tree.Add(5, 6);
+            tree.Add(22, 23);
+            tree.Add(26, 27);
+            tree.Add(7, 8);
+            tree.Add(23, 24);
+
+            tree.Remove(8);
+            tree.Remove(10);
+            tree.Remove(6);
+            tree.Remove(5);
+            tree.Remove(23);
+            tree.Remove(7);
+            tree.Remove(22);
+            Assert.AreEqual(0, tree.Height);
+            Assert.IsNull(tree.GetNode(8));
+            Assert.IsNotNull(tree.GetNode(26));
+            tree.Remove(26);
         }
 
         [TestMethod]

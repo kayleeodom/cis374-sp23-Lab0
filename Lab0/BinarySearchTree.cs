@@ -18,8 +18,7 @@ namespace Lab0
 
         public int Count { get; private set; }
 
-        // Done
-        public int Height => HeightRecursive(Root);
+        public int Height => IsEmpty? 0: HeightRecursive(Root);
 
         private int HeightRecursive(BinarySearchTreeNode<T> node)
         {
@@ -28,10 +27,10 @@ namespace Lab0
                 return -1;
             }
 
-            if (node.Left == null && node.Right == null)
-            {
-                return 0;
-            }
+            //if (node.Left == null && node.Right == null)
+            //{
+            //    return 0;
+            //}
 
             int leftHeight = HeightRecursive(node.Left);
             int rightHeight = HeightRecursive(node.Right);
@@ -232,6 +231,7 @@ namespace Lab0
                 p = p.Right;
             }
             return p;
+            }
 
             //return null;
 
@@ -379,22 +379,13 @@ namespace Lab0
                 return;
             }
 
-            //var node = GetNode(key);
-            //var parent = node.Parent;
-
             // 3) parent with 2 children
 
             // Find the node to remove
-            if (node.Left != null && node.Right != null)
-            {
-                // Find the next node (successor)
-
-
-            }
+            // Find the next node (successor)
             // Swap Key and Data from successor to node
             // Remove the successor (a leaf node) (like case 1)
 
-            //implement the next method
 
         }
 
